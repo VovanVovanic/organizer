@@ -1,15 +1,18 @@
 import { Button } from '@material-ui/core'
 import React from 'react'
-import { TasksType } from '../app/App'
+import { FilterType, TasksType } from '../app/App'
+import Buttons from '../common/buttons/buttons';
 import ListItem from './listItem/listItem'
 
 type todoListTypes = {
   title: string;
   tasks: TasksType;
   onItemDelete: (id: number) => void;
+  changeFilter: (value: FilterType) => void;
+  active: FilterType
 };
 
-const TodoLists: React.FC<todoListTypes> = ({ title, tasks, onItemDelete }) => {
+const TodoLists: React.FC<todoListTypes> = ({ title, tasks, onItemDelete, changeFilter, active }) => {
   
   const itemList = tasks.map(({...props}) => {
     return <ListItem key={props.id} {...props} onItemDelete={onItemDelete}/>;
@@ -23,9 +26,7 @@ const TodoLists: React.FC<todoListTypes> = ({ title, tasks, onItemDelete }) => {
       <ul>
         {itemList}
       </ul>
-      <button>All</button>
-      <button>Active</button>
-      <button>Completed</button>
+      <Buttons changeFilter={changeFilter} active={active}/>
     </div>
   )
 }
