@@ -6,8 +6,6 @@ import TodoLists from '../todoLists/todoLists';
 import classes from './App.module.scss';
 
 
-
-
 let todoListId1 = v1()
 let todoListId2 = v1();
 const todoLists = [
