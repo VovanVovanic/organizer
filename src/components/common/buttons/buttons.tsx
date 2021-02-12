@@ -5,12 +5,12 @@ import { FilterType } from '../../app/App'
 
 
 type BtnsPropType = {
-  changeFilter: (value: FilterType) => void;
+  changeFilterClick: (value: FilterType) => void;
   active: FilterType;
 };
-const Buttons:React.FC<BtnsPropType> = ({changeFilter, active}) => {
+const Buttons:React.FC<BtnsPropType> = ({changeFilterClick, active}) => {
   const onFilterChange = (value: FilterType)=>{
-      changeFilter(value)
+      changeFilterClick(value)
   }
   const btnList = [
     { label: "All", value: "all" },
