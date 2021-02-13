@@ -1,14 +1,20 @@
+import { TextField } from '@material-ui/core'
 import React, { useState } from 'react'
+import classes from './title.module.scss'
+
 
 type EdTitleType = {
   value: string
-  onTitleChange?: (title:string)=>void
+  onTitleChange?: (title: string) => void
+  type?: string
 }
-const EditableTitle:React.FC<EdTitleType> = ({value, onTitleChange}) => {
+const EditableTitle:React.FC<EdTitleType> = ({value, onTitleChange, type}) => {
   const [edit, setEdit] = useState<boolean>(false)
   const [title, setTitle] = useState<string>(value)
 
-  
+const cls=[classes.Span]
+  type && cls.push(classes[type])
+
  const onEditHandler = () => {
     setEdit(true)
   }
@@ -36,7 +42,8 @@ const EditableTitle:React.FC<EdTitleType> = ({value, onTitleChange}) => {
   return (
     <>
       {edit
-        ? <input
+        ? <TextField
+          variant='standard'
           type='text'
           value={title}
           autoFocus
@@ -44,7 +51,7 @@ const EditableTitle:React.FC<EdTitleType> = ({value, onTitleChange}) => {
           onChange={onChangeHandler}
           onKeyDown={onKeyHandler}
         />
-        : <span onDoubleClick={onEditHandler}>{value}</span>
+        : <span onDoubleClick={onEditHandler} className={cls.join(' ')}>{value}</span>
       }
     </>
   )

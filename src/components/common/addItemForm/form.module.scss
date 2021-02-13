@@ -1,0 +1,21 @@
+.formButton{
+  background-color: rgba(103, 128, 159, .4) !important;
+  padding: 8px 10px !important;
+  font-size: 0.8125rem !important;
+  color: blue !important;
+}
+.AddFormWrap{
+width: 100%;
+display: flex;
+justify-content: space-between;
+}
+.error {
+ border: red 1px solid;
+}
+.Error {
+ color: red;
+}
+.formButton.large{
+    padding: 8px 14px !important;
+  font-size: 0.9125rem !important;
+}

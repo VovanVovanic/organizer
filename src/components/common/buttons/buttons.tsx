@@ -1,5 +1,5 @@
 import classes from './buttons.module.scss';
-import { Button } from '@material-ui/core'
+import { Button, Grid } from '@material-ui/core'
 import React from 'react'
 import { FilterType } from '../../app/App'
 
@@ -25,15 +25,16 @@ let activeBtn =  active === value ? classes.Active : ''
         onClick={() => onFilterChange(value as FilterType)}
         color="primary"
         variant='outlined'
+        
       >
         {label}
       </Button>
     );
   })
   return (
-    <ul>
+    <Grid container justify="space-between" style={{ width: "100%", marginTop: "20px" }}>
       {btnList}
-    </ul>
-  )
+    </Grid>
+  );
 }
 export default Buttons

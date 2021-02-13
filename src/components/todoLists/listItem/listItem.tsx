@@ -2,6 +2,8 @@ import classes from '../../app/App.module.scss';
 import React from 'react'
 import {ItemType } from '../../app/App'
 import EditableTitle from '../../common/editableTitle/editableTitle';
+import { Button, Checkbox, Grid, Paper } from '@material-ui/core';
+import DeleteIcon from "@material-ui/icons/Delete";
 
 type ItemPropsType = ItemType & {
   onItemDelete: (id: string) => void;
@@ -9,6 +11,7 @@ type ItemPropsType = ItemType & {
   changeTitle: (todoId: string, value: string) => void
 };
 const ListItem: React.FC<ItemPropsType> = ({ id, title, isDone, onItemDelete, changeStatus, changeTitle }) => {
+  let isShadow = isDone && classes.isDone
   const onDeleted = () => {
     onItemDelete(id)
   }
@@ -19,14 +22,31 @@ const ListItem: React.FC<ItemPropsType> = ({ id, title, isDone, onItemDelete, ch
     changeTitle(id, value)
   }
   return (
-    <li className = {isDone ? classes.IsDone : ''}>
-      <input
-      type='checkbox'
-      checked={isDone}
-      onChange={onStatusChange}
-      />
+    <Paper className={classes.Paper + ' ' + isShadow} elevation={3}>
+      <div>
+        <Checkbox
+          checked={isDone}
+          onChange={onStatusChange}
+          color="primary"
+          inputProps={{ "aria-label": "secondary checkbox" }}
+        />
+        <EditableTitle
+          value={title}
+          onTitleChange={onTitleHandler}
+          type="listItem"
+        />
+      </div>
 
-      <EditableTitle value={title} onTitleChange={onTitleHandler}/><button onClick={onDeleted}>del</button></li>
-  )
+      <Button
+        variant="outlined"
+        size="small"
+        color="secondary"
+        startIcon={<DeleteIcon />}
+        onClick={onDeleted}
+      >
+        task
+      </Button>
+    </Paper>
+  );
 }
 export default ListItem

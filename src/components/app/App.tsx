@@ -1,4 +1,5 @@
 
+import { Container, Grid, Paper } from '@material-ui/core';
 import React, { useState } from 'react';
 import { v1 } from 'uuid';
 import AddItemForm from '../common/addItemForm/addItemForm';
@@ -116,25 +117,45 @@ function App() {
   return (
     <div className={classes.App}>
       <Header />
-      <AddItemForm addTitle={onTodoAdded} name={'add todo'}/>
-      {todos.map((el) => {
-        return (
-          <TodoLists
-            key={el.id}
-            todoListId={el.id}
-            title={el.title}
-            tasks={onFilterHandler(tasks[el.id], el.filter)}
-            onItemDelete={onItemDelete}
-            changeFilter={onFilterChange}
-            active={el.filter}
-            onAdded={addTask}
-            changeStatus={changeStatus}
-            removeTodoList={removeTodoList}
-            changeTitle={changeTitle}
-            changeTodoName={changeTodoName}
+      <Container fixed>
+        <Grid container style={{ padding: "30px", justifyContent: "center" }}>
+          <AddItemForm
+            addTitle={onTodoAdded}
+            name={"todo"}
+            placeholder="Type todo name to start"
           />
-        );
-      })}
+        </Grid>
+        <Grid
+          container
+          spacing={3}
+          style={{ marginTop: "50px" }}
+          direction="row"
+          justify="space-between"
+        >
+          {todos.map((el) => {
+            return (
+              <Grid item style={{ width: "500px" }}>
+                <Paper style={{ padding: "10px" }}>
+                  <TodoLists
+                    key={el.id}
+                    todoListId={el.id}
+                    title={el.title}
+                    tasks={onFilterHandler(tasks[el.id], el.filter)}
+                    onItemDelete={onItemDelete}
+                    changeFilter={onFilterChange}
+                    active={el.filter}
+                    onAdded={addTask}
+                    changeStatus={changeStatus}
+                    removeTodoList={removeTodoList}
+                    changeTitle={changeTitle}
+                    changeTodoName={changeTodoName}
+                  />
+                </Paper>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Container>
     </div>
   );
 }

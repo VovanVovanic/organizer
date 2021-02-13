@@ -5,6 +5,8 @@ import Buttons from '../common/buttons/buttons';
 import ListItem from './listItem/listItem'
 import AddItemForm from '../common/addItemForm/addItemForm';
 import EditableTitle from '../common/editableTitle/editableTitle';
+import { Button, Grid, GridList } from '@material-ui/core';
+import DeleteIcon from "@material-ui/icons/Delete";
 
 type todoListTypes = {
   title: string;
@@ -57,13 +59,25 @@ const TodoLists: React.FC<todoListTypes> = ({ title, tasks, onItemDelete, change
     />;
   })
   return (
-    <div>
-      <EditableTitle value={title} onTitleChange={OnChangeTodoName}/>
-      <button onClick={onTodoRemove}>del</button>
-      <AddItemForm addTitle={onTaskAdded} name={"add task"} />
-      <ul>{itemList}</ul>
+    <Grid container>
+      <Grid item xs>
+        <EditableTitle value={title} onTitleChange={OnChangeTodoName} type='header'/>
+        <Button
+          variant="outlined"
+          color="secondary"
+          size="medium"
+          startIcon={<DeleteIcon />}
+          onClick={onTodoRemove}
+          style={{marginLeft:"30px"}}
+        >
+          list
+        </Button>
+      </Grid>
+
+      <AddItemForm addTitle={onTaskAdded} name={"task"} placeholder='type your task name'/>
+      <Grid item style={{width: "100%"}}>{itemList}</Grid>
       <Buttons changeFilterClick={changeFilterHandler} active={active} />
-    </div>
+    </Grid>
   );
 }
 export default TodoLists

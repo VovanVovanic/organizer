@@ -1,14 +1,19 @@
-import { Button } from '@material-ui/core'
+import { Button, IconButton, TextField } from '@material-ui/core'
+import { AddBox } from '@material-ui/icons';
 import React, { useState } from 'react'
-import classes from "../../app/App.module.scss";
+import classes from "./form.module.scss";
 
 
 type InputPropsType = {
-  addTitle: (title: string) => void
-  name: string
-}
-const AddItemForm: React.FC<InputPropsType> = ({ addTitle, name }) => {
+  addTitle: (title: string) => void;
+  name: string;
+  type?: string
+  placeholder?: string
+};
+const AddItemForm: React.FC<InputPropsType> = ({ addTitle, name, type, placeholder}) => {
 
+  const cls = [classes.formButton];
+  type && cls.push(classes[type])
   const [error, setError] = useState<string | null>(null);
   const [newTitle, setTitle] = useState<string>("");
 
@@ -31,15 +36,20 @@ const AddItemForm: React.FC<InputPropsType> = ({ addTitle, name }) => {
     setTitle("");
   };
   return (
-    <div>
-      <input
-        className={error ? classes.error : ''}
+    <div className={classes.AddFormWrap}>
+      <TextField
+        variant='standard'
+        error={!!error}
+        helperText={error}
         value={newTitle}
         onChange={onChangeInput}
         onKeyDown={onKeyPressHandler}
+        style={{ width: "80%" }}
+        placeholder={placeholder}
       />
-      <Button variant='contained' color='primary' onClick={onAddedNewTitle}>{name}</Button>
-      {error && <div className={classes.Error}>{error}</div>}
+      <IconButton
+        color='primary'
+        onClick={onAddedNewTitle}><AddBox />{ name}</IconButton>
     </div>
   )
 }
