@@ -1,4 +1,4 @@
-import { AppBar, FormControlLabel, FormGroup, Paper, Switch } from '@material-ui/core';
+import { AppBar, FormControlLabel, FormGroup, Switch } from '@material-ui/core';
 import React from 'react'
 
 //checked={auth} onChange={handleChange}
@@ -6,7 +6,7 @@ import React from 'react'
 const Header = () => {
   return (
     <>
-      <FormGroup style={{ background: "rgba(31, 58, 147, .9)" }}>
+      <FormGroup style={{ background: "rgba(31, 58, 147, .9)", padding:"5px 40px" }}>
         <FormControlLabel
           style={{ color: "white" }}
           control={<Switch aria-label="login switch" />}

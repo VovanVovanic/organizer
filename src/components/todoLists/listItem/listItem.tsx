@@ -22,7 +22,7 @@ const ListItem: React.FC<ItemPropsType> = ({ id, title, isDone, onItemDelete, ch
     changeTitle(id, value)
   }
   return (
-    <Paper className={classes.Paper + ' ' + isShadow} elevation={3}>
+    <Paper className={classes.Paper + ' ' + isShadow} elevation={3} style={{padding:"5px 5px 5px 0"}}>
       <div>
         <Checkbox
           checked={isDone}

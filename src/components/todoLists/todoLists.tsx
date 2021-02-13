@@ -1,54 +1,52 @@
-import classes from '../app/App.module.scss';
+
 import React from 'react'
 import { FilterType, TasksType } from '../app/App'
 import Buttons from '../common/buttons/buttons';
 import ListItem from './listItem/listItem'
 import AddItemForm from '../common/addItemForm/addItemForm';
 import EditableTitle from '../common/editableTitle/editableTitle';
-import { Button, Grid, GridList } from '@material-ui/core';
+import { Button, Grid} from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
+import { useDispatch } from 'react-redux';
+import { addNewTask, changeTaskStatus, changeTaskTitle, removeTask } from '../../redux/task-reducer';
+import { changeTodolistFilter, changeTodolistTitle, removeTodolist } from '../../redux/todos-reduser';
 
 type todoListTypes = {
   title: string;
   todoListId: string;
   tasks: TasksType;
-  onItemDelete: (id: string, todoId: string) => void;
-  changeFilter: (value: FilterType, todoListId: string) => void;
   active: FilterType;
-  onAdded: (value: string, todoListId: string) => void;
-  changeStatus: (id: string, isDone: boolean, todoListId: string) => void;
-  changeTitle: (todoListId: string, todoId: string, title: string) => void;
-  changeTodoName: (todoListId:string, title:string)=> void
-  removeTodoList: (todoListId: string) => void;
 };
 
-const TodoLists: React.FC<todoListTypes> = ({ title, tasks, onItemDelete, changeFilter, active, onAdded, changeStatus, todoListId, removeTodoList, changeTitle, changeTodoName}) => {
- 
- 
+const TodoLists: React.FC<todoListTypes> = ({ title, tasks, active, todoListId}) => {
+  
+  const dispatch = useDispatch();
   
   const changeFilterHandler = (value: FilterType) => {
-    changeFilter(value, todoListId)
+    dispatch(changeTodolistFilter(todoListId, value));
   }
 
   const onItemDeleteHandler = (id: string) => {
-  onItemDelete(id, todoListId)
+   dispatch(removeTask(id, todoListId));
   }
   const changeStatusHandler = (id: string, isDone: boolean,) => {
-    changeStatus(id, isDone, todoListId)
+    dispatch(changeTaskStatus(id, isDone, todoListId));
   }
 
   const onTodoRemove = () => {
-  removeTodoList(todoListId)
+  dispatch(removeTodolist(todoListId));
 }
   const onTaskAdded = (title: string) => {
-    onAdded(title, todoListId);
+   dispatch(addNewTask(title, todoListId));
   }
   const onChangeTitle = (todoId: string, value: string) => {
-    changeTitle(todoListId, todoId, value)
+        dispatch(changeTaskTitle(todoId, value, todoListId));
+        dispatch(changeTaskStatus(todoId, false, todoListId));
   }
   const OnChangeTodoName = (title: string) => {
-    changeTodoName(todoListId, title)
+    dispatch(changeTodolistTitle(todoListId, title));
   }
+
   const itemList = tasks.map(({...props}) => {
     return <ListItem
       key={props.id}
