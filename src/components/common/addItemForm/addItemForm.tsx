@@ -1,12 +1,13 @@
 import { Button } from '@material-ui/core'
 import React, { useState } from 'react'
-import classes from "../app/App.module.scss";
+import classes from "../../app/App.module.scss";
 
 
 type InputPropsType = {
   addTitle: (title: string) => void
+  name: string
 }
-const AddItemForm: React.FC<InputPropsType> = ({ addTitle }) => {
+const AddItemForm: React.FC<InputPropsType> = ({ addTitle, name }) => {
 
   const [error, setError] = useState<string | null>(null);
   const [newTitle, setTitle] = useState<string>("");
@@ -37,7 +38,7 @@ const AddItemForm: React.FC<InputPropsType> = ({ addTitle }) => {
         onChange={onChangeInput}
         onKeyDown={onKeyPressHandler}
       />
-      <Button variant='contained' color='primary' onClick={onAddedNewTitle}>add task</Button>
+      <Button variant='contained' color='primary' onClick={onAddedNewTitle}>{name}</Button>
       {error && <div className={classes.Error}>{error}</div>}
     </div>
   )

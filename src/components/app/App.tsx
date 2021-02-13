@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { v1 } from 'uuid';
+import AddItemForm from '../common/addItemForm/addItemForm';
 import Header from '../header/header';
 import TodoLists from '../todoLists/todoLists';
 import classes from './App.module.scss';
@@ -15,16 +16,17 @@ const todoLists = [
 
 let todosTasks = {
   [todoListId1]: [
-    { id: v1(), title: "HTML", isDone: true },
-    { id: v1(), title: "React", isDone: true },
+    { id: v1(), title: "HTML", isDone: false },
+    { id: v1(), title: "React", isDone: false },
     { id: v1(), title: "Redux", isDone: false },
-    { id: v1(), title: "Rest", isDone: true },
+    { id: v1(), title: "Rest", isDone: false },
   ],
   [todoListId2]: [
-    { id: v1(), title: "rrrr", isDone: true },
-    { id: v1(), title: "ssss", isDone: true },
+    { id: v1(), title: "rrrr", isDone: false },
+    { id: v1(), title: "ssss", isDone: false },
   ],
 };
+
 
 export type TasksType = typeof todosTasks[0]
 export type ItemType = typeof todosTasks[0][0];
@@ -71,7 +73,7 @@ function App() {
   }
 
   const addTask = (value: string, todoListId: string) => {
-    const newtask = { id: v1(), title: value, isDone: true };
+    const newtask = { id: v1(), title: value, isDone: false };
     let todolistTasks = tasks[todoListId];
     tasks[todoListId] = [newtask, ...todolistTasks]
     setTasks({ ...tasks });
@@ -90,29 +92,49 @@ function App() {
     delete tasks[todoListId]
     setTasks({...tasks})
   }
+  const onTodoAdded = (title: string) => {
+   let newTodoId = v1()
+    let newList: TodoListsType = { id: newTodoId, title, filter: "all" };
+    setTodos([...todos, newList])
+    setTasks({...tasks, [newTodoId]:[]})
+  }
+  const changeTitle = (todoListId: string, todoId: string, title: string) => {
+    let todoList = tasks[todoListId]
+    let task = todoList.find((el) => el.id === todoId);
+    if (task) {
+      task.title = title
+      setTasks({ ...tasks });
+    }
+  }
+  const changeTodoName = (todoListId: string, title: string) => {
+    let todo = todos.find((el) => el.id === todoListId)
+    if (todo) {
+      todo.title = title
+      setTodos([...todos])
+    }
+  }
   return (
     <div className={classes.App}>
       <Header />
-      {
-        todos.map((el) => {
-          return (
-            <TodoLists
-              key={el.id}
-              todoListId = {el.id}
-              title={el.title}
-              tasks={onFilterHandler(tasks[el.id], el.filter)}
-              onItemDelete={onItemDelete}
-              changeFilter={onFilterChange}
-              active={el.filter}
-              onAdded={addTask}
-              changeStatus={changeStatus}
-              removeTodoList={removeTodoList}
-            />
-          );
-        })
-      }
-
-
+      <AddItemForm addTitle={onTodoAdded} name={'add todo'}/>
+      {todos.map((el) => {
+        return (
+          <TodoLists
+            key={el.id}
+            todoListId={el.id}
+            title={el.title}
+            tasks={onFilterHandler(tasks[el.id], el.filter)}
+            onItemDelete={onItemDelete}
+            changeFilter={onFilterChange}
+            active={el.filter}
+            onAdded={addTask}
+            changeStatus={changeStatus}
+            removeTodoList={removeTodoList}
+            changeTitle={changeTitle}
+            changeTodoName={changeTodoName}
+          />
+        );
+      })}
     </div>
   );
 }

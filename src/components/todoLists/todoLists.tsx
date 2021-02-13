@@ -3,7 +3,8 @@ import React from 'react'
 import { FilterType, TasksType } from '../app/App'
 import Buttons from '../common/buttons/buttons';
 import ListItem from './listItem/listItem'
-import AddItemForm from '../addItemForm/addItemForm';
+import AddItemForm from '../common/addItemForm/addItemForm';
+import EditableTitle from '../common/editableTitle/editableTitle';
 
 type todoListTypes = {
   title: string;
@@ -14,10 +15,12 @@ type todoListTypes = {
   active: FilterType;
   onAdded: (value: string, todoListId: string) => void;
   changeStatus: (id: string, isDone: boolean, todoListId: string) => void;
-  removeTodoList: (todoListId:string)=>void;
+  changeTitle: (todoListId: string, todoId: string, title: string) => void;
+  changeTodoName: (todoListId:string, title:string)=> void
+  removeTodoList: (todoListId: string) => void;
 };
 
-const TodoLists: React.FC<todoListTypes> = ({ title, tasks, onItemDelete, changeFilter, active, onAdded, changeStatus, todoListId, removeTodoList}) => {
+const TodoLists: React.FC<todoListTypes> = ({ title, tasks, onItemDelete, changeFilter, active, onAdded, changeStatus, todoListId, removeTodoList, changeTitle, changeTodoName}) => {
  
  
   
@@ -38,25 +41,29 @@ const TodoLists: React.FC<todoListTypes> = ({ title, tasks, onItemDelete, change
   const onTaskAdded = (title: string) => {
     onAdded(title, todoListId);
   }
-
+  const onChangeTitle = (todoId: string, value: string) => {
+    changeTitle(todoListId, todoId, value)
+  }
+  const OnChangeTodoName = (title: string) => {
+    changeTodoName(todoListId, title)
+  }
   const itemList = tasks.map(({...props}) => {
     return <ListItem
       key={props.id}
       {...props}
       onItemDelete={onItemDeleteHandler}
       changeStatus={changeStatusHandler}
-   
+      changeTitle={onChangeTitle}
     />;
   })
   return (
     <div>
-      <h3>{title}<button onClick={onTodoRemove}>del</button></h3>
-      <AddItemForm addTitle={onTaskAdded}/>
-      <ul>
-        {itemList}
-      </ul>
-      <Buttons changeFilterClick={changeFilterHandler} active={active}/>
+      <EditableTitle value={title} onTitleChange={OnChangeTodoName}/>
+      <button onClick={onTodoRemove}>del</button>
+      <AddItemForm addTitle={onTaskAdded} name={"add task"} />
+      <ul>{itemList}</ul>
+      <Buttons changeFilterClick={changeFilterHandler} active={active} />
     </div>
-  )
+  );
 }
 export default TodoLists
