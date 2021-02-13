@@ -1,4 +1,4 @@
-import { Button, IconButton, TextField } from '@material-ui/core'
+import { IconButton, TextField } from '@material-ui/core'
 import { AddBox } from '@material-ui/icons';
 import React, { useState } from 'react'
 import classes from "./form.module.scss";
@@ -10,7 +10,8 @@ type InputPropsType = {
   type?: string
   placeholder?: string
 };
-const AddItemForm: React.FC<InputPropsType> = ({ addTitle, name, type, placeholder}) => {
+const AddItemForm: React.FC<InputPropsType> = React.memo(({ addTitle, name, type, placeholder}) => {
+
 
   const cls = [classes.formButton];
   type && cls.push(classes[type])
@@ -19,7 +20,7 @@ const AddItemForm: React.FC<InputPropsType> = ({ addTitle, name, type, placehold
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.currentTarget.value);
-    setError(null);
+    error !== null && setError(null);
   };
   const onKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.key === "Enter" && onAddedNewTitle();
@@ -52,5 +53,5 @@ const AddItemForm: React.FC<InputPropsType> = ({ addTitle, name, type, placehold
         onClick={onAddedNewTitle}><AddBox />{ name}</IconButton>
     </div>
   )
-}
+})
 export default AddItemForm

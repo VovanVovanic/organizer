@@ -1,8 +1,8 @@
 
 import { Container, Grid, Paper } from '@material-ui/core';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addTodolist, removeTodolist } from '../../redux/todos-reduser';
+import { addTodolist} from '../../redux/todos-reduser';
 import AddItemForm from '../common/addItemForm/addItemForm';
 import Header from '../header/header';
 import TodoLists from '../todoLists/todoLists';
@@ -31,25 +31,11 @@ function App() {
    const tasks = useSelector<AppRootStateType, TaskStateType>((state)=>state.tasks)
    
 
-  const onFilterHandler = (arr: TasksType, filter: FilterType) => {
-    switch (filter) {
-      case "all": {
-        return arr;
-      }
-      case "active": {
-        return arr.filter((el) => !el.isDone);
-      }
-      case "completed": {
-        return arr.filter((el) => el.isDone);
-      }
-      default:
-        return arr;
-    }
-  };
 
-  const onTodoAdded = (title: string) => {
+
+  const onTodoAdded = useCallback((title: string) => {
     dispatch(addTodolist(title));
-  }
+  },[dispatch])
 
   return (
     <div className={classes.App}>
@@ -71,14 +57,13 @@ function App() {
         >
           {todos.map((el) => {
             return (
-              <Grid key={el.id}
-                item style={{ width: "500px" }}>
+              <Grid key={el.id} item style={{ width: "500px" }}>
                 <Paper style={{ padding: "10px" }}>
                   <TodoLists
                     key={el.id}
                     todoListId={el.id}
                     title={el.title}
-                    tasks={onFilterHandler(tasks[el.id], el.filter)}
+                    tasks={tasks[el.id]}
                     active={el.filter}
                   />
                 </Paper>

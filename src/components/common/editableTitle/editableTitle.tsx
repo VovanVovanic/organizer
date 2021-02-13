@@ -8,7 +8,8 @@ type EdTitleType = {
   onTitleChange?: (title: string) => void
   type?: string
 }
-const EditableTitle:React.FC<EdTitleType> = ({value, onTitleChange, type}) => {
+const EditableTitle: React.FC<EdTitleType> = ({ value, onTitleChange, type }) => {
+  console.log("span rendered");
   const [edit, setEdit] = useState<boolean>(false)
   const [title, setTitle] = useState<string>(value)
 

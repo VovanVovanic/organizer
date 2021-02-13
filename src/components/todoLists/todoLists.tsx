@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import { FilterType, TasksType } from '../app/App'
 import Buttons from '../common/buttons/buttons';
 import ListItem from './listItem/listItem'
@@ -18,7 +18,7 @@ type todoListTypes = {
   active: FilterType;
 };
 
-const TodoLists: React.FC<todoListTypes> = ({ title, tasks, active, todoListId}) => {
+const TodoLists: React.FC<todoListTypes> = React.memo(({ title, tasks, active, todoListId}) => {
   
   const dispatch = useDispatch();
   
@@ -26,28 +26,47 @@ const TodoLists: React.FC<todoListTypes> = ({ title, tasks, active, todoListId})
     dispatch(changeTodolistFilter(todoListId, value));
   }
 
-  const onItemDeleteHandler = (id: string) => {
+  const onItemDeleteHandler = useCallback((id: string) => {
    dispatch(removeTask(id, todoListId));
-  }
-  const changeStatusHandler = (id: string, isDone: boolean,) => {
+  }, [dispatch, todoListId])
+  
+  const changeStatusHandler = useCallback((id: string, isDone: boolean,) => {
     dispatch(changeTaskStatus(id, isDone, todoListId));
-  }
+  },[dispatch, todoListId])
 
-  const onTodoRemove = () => {
+  const onTodoRemove = useCallback(() => {
   dispatch(removeTodolist(todoListId));
-}
-  const onTaskAdded = (title: string) => {
+  }, [dispatch, todoListId])
+  
+  const onTaskAdded = useCallback((title: string) => {
    dispatch(addNewTask(title, todoListId));
-  }
-  const onChangeTitle = (todoId: string, value: string) => {
+  }, [dispatch, todoListId])
+  
+  const onChangeTitle = useCallback((todoId: string, value: string) => {
         dispatch(changeTaskTitle(todoId, value, todoListId));
         dispatch(changeTaskStatus(todoId, false, todoListId));
-  }
-  const OnChangeTodoName = (title: string) => {
+  }, [dispatch, todoListId])
+  
+  const OnChangeTodoName = useCallback((title: string) => {
     dispatch(changeTodolistTitle(todoListId, title));
-  }
+  },[dispatch, todoListId])
 
-  const itemList = tasks.map(({...props}) => {
+    const onFilterHandler = (arr: TasksType, filter: FilterType) => {
+      switch (filter) {
+        case "all": {
+          return arr;
+        }
+        case "active": {
+          return arr.filter((el) => !el.isDone);
+        }
+        case "completed": {
+          return arr.filter((el) => el.isDone);
+        }
+        default:
+          return arr;
+      }
+    };
+  const itemList = onFilterHandler(tasks, active).map(({...props}) => {
     return <ListItem
       key={props.id}
       {...props}
@@ -77,5 +96,5 @@ const TodoLists: React.FC<todoListTypes> = ({ title, tasks, active, todoListId})
       <Buttons changeFilterClick={changeFilterHandler} active={active} />
     </Grid>
   );
-}
+})
 export default TodoLists
