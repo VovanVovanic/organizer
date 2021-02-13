@@ -71,7 +71,8 @@ function App() {
         >
           {todos.map((el) => {
             return (
-              <Grid item style={{ width: "500px" }}>
+              <Grid key={el.id}
+                item style={{ width: "500px" }}>
                 <Paper style={{ padding: "10px" }}>
                   <TodoLists
                     key={el.id}
