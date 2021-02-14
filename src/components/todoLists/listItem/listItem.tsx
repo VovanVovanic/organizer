@@ -1,38 +1,41 @@
 import classes from '../../app/App.module.scss';
-import React from 'react'
-import {ItemType } from '../../app/App'
+import React, { useCallback } from 'react'
 import EditableTitle from '../../common/editableTitle/editableTitle';
-import { Button, Checkbox, Grid, Paper } from '@material-ui/core';
+import { Button, Checkbox,  Paper } from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
+import { TaskStatuses, TaskType } from '../../../api/api';
+import { fetchTaskDelete, updateTaskStatus } from '../../../redux/task-reducer';
+import { useDispatch } from 'react-redux';
 
-type ItemPropsType = ItemType & {
-  onItemDelete: (id: string) => void;
-  changeStatus: (id: string, isDone: boolean) => void;
-  changeTitle: (todoId: string, value: string) => void
+type ItemPropsType = TaskType & {
+  todoListId: string
 };
-const ListItem: React.FC<ItemPropsType> = ({ id, title, isDone, onItemDelete, changeStatus, changeTitle }) => {
-  let isShadow = isDone && classes.isDone
+const ListItem: React.FC<ItemPropsType> = React.memo(({ id, title, status, todoListId}) => {
+const dispatch = useDispatch()
+  let isShadow = status === TaskStatuses.Completed && classes.isDone
   const onDeleted = () => {
-    onItemDelete(id)
+    dispatch(fetchTaskDelete(todoListId, id));
   }
-  const onStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    changeStatus(id, e.currentTarget.checked)
-  };
-  const onTitleHandler = (value: string) => {
-    changeTitle(id, value)
-  }
+  const onStatusChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(updateTaskStatus(id,todoListId, e.currentTarget.checked? TaskStatuses.Completed: TaskStatuses.New));
+  }, [id, todoListId])
+  
+  const onTitleChange= useCallback((value: string) => {
+    dispatch(updateTaskStatus(id, todoListId, value));
+  }, [dispatch, todoListId])
+  
   return (
     <Paper className={classes.Paper + ' ' + isShadow} elevation={3} style={{padding:"5px 5px 5px 0"}}>
       <div>
         <Checkbox
-          checked={isDone}
+          checked={status === TaskStatuses.Completed}
           onChange={onStatusChange}
           color="primary"
           inputProps={{ "aria-label": "secondary checkbox" }}
         />
         <EditableTitle
           value={title}
-          onTitleChange={onTitleHandler}
+          changeTitle={onTitleChange}
           type="listItem"
         />
       </div>
@@ -48,5 +51,5 @@ const ListItem: React.FC<ItemPropsType> = ({ id, title, isDone, onItemDelete, ch
       </Button>
     </Paper>
   );
-}
+})
 export default ListItem

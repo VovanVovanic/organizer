@@ -1,40 +1,36 @@
 
 import { Container, Grid, Paper } from '@material-ui/core';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addTodolist} from '../../redux/todos-reduser';
+import { addTodolist, fetchCreateTodoList, fetchTodolists, TodoListsCommonType} from '../../redux/todos-reduser';
 import AddItemForm from '../common/addItemForm/addItemForm';
 import Header from '../header/header';
 import TodoLists from '../todoLists/todoLists';
 import classes from './App.module.scss';
 import {AppRootStateType} from '../../redux/store';
+import { TaskType } from '../../api/api';
 
 
 
+export type TasksStateType = {
+  [key: string]: Array<TaskType>;
+};
 
-export type TasksType = Array<ItemType>
-export type ItemType = { id: string, title: string, isDone: boolean };
-export type FilterType = 'all' | 'active' | 'completed'
-
-export type TaskStateType = {
-  [key: string]: Array<ItemType>
-}
-
-export type TodoListsType = {
-  id:string, title:string, filter: FilterType
-}
 
 function App() {
   
   const dispatch = useDispatch()
-  const todos = useSelector<AppRootStateType, Array<TodoListsType>>((state) => state.todolists)
-   const tasks = useSelector<AppRootStateType, TaskStateType>((state)=>state.tasks)
+  const todos = useSelector<AppRootStateType, Array<TodoListsCommonType>>((state) => state.todolists)
+   const tasks = useSelector<AppRootStateType, TasksStateType>((state)=>state.tasks)
    
+  useEffect(() => {
+    dispatch(fetchTodolists());
+  },[])
 
 
 
   const onTodoAdded = useCallback((title: string) => {
-    dispatch(addTodolist(title));
+    dispatch(fetchCreateTodoList(title));
   },[dispatch])
 
   return (

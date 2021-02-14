@@ -1,6 +1,5 @@
 
-import React, { useCallback } from 'react'
-import { FilterType, TasksType } from '../app/App'
+import React, { useCallback, useEffect } from 'react'
 import Buttons from '../common/buttons/buttons';
 import ListItem from './listItem/listItem'
 import AddItemForm from '../common/addItemForm/addItemForm';
@@ -8,59 +7,50 @@ import EditableTitle from '../common/editableTitle/editableTitle';
 import { Button, Grid} from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useDispatch } from 'react-redux';
-import { addNewTask, changeTaskStatus, changeTaskTitle, removeTask } from '../../redux/task-reducer';
-import { changeTodolistFilter, changeTodolistTitle, removeTodolist } from '../../redux/todos-reduser';
+import { fetchTaskCreation, fetchTasksReceive} from '../../redux/task-reducer';
+import { changeTodolistFilter, changeTodolistTitle, fetchChangeListTitle, fetchRemoveTodoList, FilterType, removeTodolist } from '../../redux/todos-reduser';
+import { TaskStatuses, TaskType } from '../../api/api';
 
 type todoListTypes = {
   title: string;
   todoListId: string;
-  tasks: TasksType;
+  tasks: Array<TaskType>;
   active: FilterType;
 };
 
 const TodoLists: React.FC<todoListTypes> = React.memo(({ title, tasks, active, todoListId}) => {
   
   const dispatch = useDispatch();
+    useEffect(() => {
+      dispatch(fetchTasksReceive(todoListId));
+    }, []);
   
-  const changeFilterHandler = (value: FilterType) => {
+  const changeFilterHandler = useCallback((value: FilterType) => {
     dispatch(changeTodolistFilter(todoListId, value));
-  }
-
-  const onItemDeleteHandler = useCallback((id: string) => {
-   dispatch(removeTask(id, todoListId));
-  }, [dispatch, todoListId])
-  
-  const changeStatusHandler = useCallback((id: string, isDone: boolean,) => {
-    dispatch(changeTaskStatus(id, isDone, todoListId));
   },[dispatch, todoListId])
 
   const onTodoRemove = useCallback(() => {
-  dispatch(removeTodolist(todoListId));
+  dispatch(fetchRemoveTodoList(todoListId));
   }, [dispatch, todoListId])
   
   const onTaskAdded = useCallback((title: string) => {
-   dispatch(addNewTask(title, todoListId));
-  }, [dispatch, todoListId])
-  
-  const onChangeTitle = useCallback((todoId: string, value: string) => {
-        dispatch(changeTaskTitle(todoId, value, todoListId));
-        dispatch(changeTaskStatus(todoId, false, todoListId));
+   dispatch(fetchTaskCreation(todoListId, title));
   }, [dispatch, todoListId])
   
   const OnChangeTodoName = useCallback((title: string) => {
-    dispatch(changeTodolistTitle(todoListId, title));
+    dispatch(fetchChangeListTitle(title, todoListId));
   },[dispatch, todoListId])
 
-    const onFilterHandler = (arr: TasksType, filter: FilterType) => {
+    const onFilterHandler = (arr: Array<TaskType>, filter: FilterType) => {
       switch (filter) {
         case "all": {
           return arr;
         }
         case "active": {
-          return arr.filter((el) => !el.isDone);
+          return arr.filter((el) => el.status === TaskStatuses.New);
         }
         case "completed": {
-          return arr.filter((el) => el.isDone);
+          return arr.filter((el) => el.status === TaskStatuses.Completed);
         }
         default:
           return arr;
@@ -70,15 +60,12 @@ const TodoLists: React.FC<todoListTypes> = React.memo(({ title, tasks, active, t
     return <ListItem
       key={props.id}
       {...props}
-      onItemDelete={onItemDeleteHandler}
-      changeStatus={changeStatusHandler}
-      changeTitle={onChangeTitle}
     />;
   })
   return (
     <Grid container>
       <Grid item xs>
-        <EditableTitle value={title} onTitleChange={OnChangeTodoName} type='header'/>
+        <EditableTitle value={title} changeTitle={OnChangeTodoName} type='header'/>
         <Button
           variant="outlined"
           color="secondary"

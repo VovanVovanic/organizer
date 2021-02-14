@@ -1,7 +1,8 @@
 import classes from './buttons.module.scss';
 import { Button, Grid } from '@material-ui/core'
 import React from 'react'
-import { FilterType } from '../../app/App'
+import { FilterType } from '../../../redux/todos-reduser';
+
 
 
 type BtnsPropType = {

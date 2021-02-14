@@ -1,15 +1,14 @@
 import { TextField } from '@material-ui/core'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import classes from './title.module.scss'
 
 
 type EdTitleType = {
   value: string
-  onTitleChange?: (title: string) => void
+  changeTitle?: (title: string) => void
   type?: string
 }
-const EditableTitle: React.FC<EdTitleType> = ({ value, onTitleChange, type }) => {
-  console.log("span rendered");
+const EditableTitle: React.FC<EdTitleType> = React.memo(({ value, changeTitle, type }) => {
   const [edit, setEdit] = useState<boolean>(false)
   const [title, setTitle] = useState<string>(value)
 
@@ -20,11 +19,11 @@ const cls=[classes.Span]
     setEdit(true)
   }
 
-  const onTitleChangeHandler = () => {
+  const onTitleChangeHandler = useCallback(() => {
     if (title.trim() !== "") {
-      onTitleChange && onTitleChange(title);
+      changeTitle && changeTitle(title);
     }
-  };
+  }, [changeTitle, title]);
   const onBlurHandler = () => {
     onTitleChangeHandler()
     setEdit(false)
@@ -56,6 +55,6 @@ const cls=[classes.Span]
       }
     </>
   )
-}
+})
 
 export default EditableTitle
