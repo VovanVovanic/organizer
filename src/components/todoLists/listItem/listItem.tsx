@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 type ItemPropsType = TaskType & {
   todoListId: string
 };
-const ListItem: React.FC<ItemPropsType> = React.memo(({ id, title, status, todoListId}) => {
+const ListItem: React.FC<ItemPropsType> = React.memo(({ id, title, status, todoListId, entityStatus}) => {
 const dispatch = useDispatch()
   let isShadow = status === TaskStatuses.Completed && classes.isDone
   const onDeleted = () => {
@@ -25,18 +25,24 @@ const dispatch = useDispatch()
   }, [dispatch, todoListId])
   
   return (
-    <Paper className={classes.Paper + ' ' + isShadow} elevation={3} style={{padding:"5px 5px 5px 0"}}>
+    <Paper
+      className={classes.Paper + " " + isShadow}
+      elevation={3}
+      style={{ padding: "5px 5px 5px 0" }}
+    >
       <div>
         <Checkbox
           checked={status === TaskStatuses.Completed}
           onChange={onStatusChange}
           color="primary"
           inputProps={{ "aria-label": "secondary checkbox" }}
+          disabled={entityStatus === "loading"}
         />
         <EditableTitle
           value={title}
           changeTitle={onTitleChange}
           type="listItem"
+          disabled={entityStatus === "loading"}
         />
       </div>
 
@@ -46,6 +52,7 @@ const dispatch = useDispatch()
         color="secondary"
         startIcon={<DeleteIcon />}
         onClick={onDeleted}
+        disabled={entityStatus === "loading"}
       >
         task
       </Button>

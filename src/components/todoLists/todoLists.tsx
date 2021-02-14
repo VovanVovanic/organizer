@@ -8,17 +8,19 @@ import { Button, Grid} from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useDispatch } from 'react-redux';
 import { fetchTaskCreation, fetchTasksReceive} from '../../redux/task-reducer';
-import { changeTodolistFilter, changeTodolistTitle, fetchChangeListTitle, fetchRemoveTodoList, FilterType, removeTodolist } from '../../redux/todos-reduser';
+import { changeTodolistFilter,  fetchChangeListTitle, fetchRemoveTodoList, FilterType} from '../../redux/todos-reduser';
 import { TaskStatuses, TaskType } from '../../api/api';
+import { RequestStatusType } from '../../redux/app-reducer';
 
 type todoListTypes = {
   title: string;
   todoListId: string;
   tasks: Array<TaskType>;
   active: FilterType;
+  entityStatus: RequestStatusType;
 };
 
-const TodoLists: React.FC<todoListTypes> = React.memo(({ title, tasks, active, todoListId}) => {
+const TodoLists: React.FC<todoListTypes> = React.memo(({ title, tasks, active, todoListId, entityStatus}) => {
   
   const dispatch = useDispatch();
     useEffect(() => {
@@ -72,13 +74,19 @@ const TodoLists: React.FC<todoListTypes> = React.memo(({ title, tasks, active, t
           size="medium"
           startIcon={<DeleteIcon />}
           onClick={onTodoRemove}
-          style={{marginLeft:"30px"}}
+          style={{ marginLeft: "30px" }}
+          disabled={entityStatus === 'loading'}
         >
           list
         </Button>
       </Grid>
 
-      <AddItemForm addTitle={onTaskAdded} name={"task"} placeholder='type your task name'/>
+      <AddItemForm
+        addTitle={onTaskAdded}
+        name={"task"}
+        placeholder='type your task name'
+        disabled ={entityStatus === 'loading'}
+      />
       <Grid item style={{width: "100%"}}>{itemList}</Grid>
       <Buttons changeFilterClick={changeFilterHandler} active={active} />
     </Grid>

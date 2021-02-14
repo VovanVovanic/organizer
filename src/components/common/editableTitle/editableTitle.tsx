@@ -7,8 +7,9 @@ type EdTitleType = {
   value: string
   changeTitle?: (title: string) => void
   type?: string
+  disabled?: boolean
 }
-const EditableTitle: React.FC<EdTitleType> = React.memo(({ value, changeTitle, type }) => {
+const EditableTitle: React.FC<EdTitleType> = React.memo(({ value, changeTitle, type, disabled }) => {
   const [edit, setEdit] = useState<boolean>(false)
   const [title, setTitle] = useState<string>(value)
 
@@ -43,6 +44,7 @@ const cls=[classes.Span]
     <>
       {edit
         ? <TextField
+          disabled={disabled}
           variant='standard'
           type='text'
           value={title}
