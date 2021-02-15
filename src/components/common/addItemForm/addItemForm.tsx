@@ -49,6 +49,7 @@ const AddItemForm: React.FC<InputPropsType> = React.memo(({ addTitle, name, type
         style={{ width: "80%" }}
         placeholder={placeholder}
         disabled={disabled}
+        autoFocus
       />
       <IconButton
         disabled={disabled}

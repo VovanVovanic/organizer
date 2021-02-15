@@ -1,27 +1,29 @@
 import axios from 'axios'
+import { DataType } from '../components/common/login/login';
 import { RequestStatusType } from '../redux/app-reducer';
 
 const instance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',
-  withCredentials: true,
-      headers: {
+    withCredentials: true,
+    headers: {
         'API-KEY': 'fad05ac5-2f42-40ba-b632-11fe6e84449e'
-    }  
+    }
 })
 
 // api
 export const todolistsAPI = {
     getTodolists() {
-        return instance.get<Array<TodolistType>>('todo-lists').then((res)=>res.data);
+        return instance.get<Array<TodolistType>>('todo-lists').then((res) => res.data);
     },
+
     createTodolist(title: string) {
-        return instance.post<ResponseType<{ item: TodolistType }>>('todo-lists', {title: title}).then((res)=>res.data);
+        return instance.post<ResponseType<{ item: TodolistType }>>('todo-lists', { title: title }).then((res) => res.data);
     },
     deleteTodolist(id: string) {
         return instance.delete<ResponseType>(`todo-lists/${id}`);
     },
     updateTodolist(id: string, title: string) {
-        return instance.put<ResponseType>(`todo-lists/${id}`, {title: title}).then((res)=>res.data);
+        return instance.put<ResponseType>(`todo-lists/${id}`, { title: title }).then((res) => res.data);
     },
     getTasks(todolistId: string) {
         return instance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`);
@@ -30,10 +32,19 @@ export const todolistsAPI = {
         return instance.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`);
     },
     createTask(todolistId: string, taskTitile: string) {
-        return instance.post<ResponseType<{ item:TaskType}>>(`todo-lists/${todolistId}/tasks`, {title: taskTitile}).then((res)=>res.data);
+        return instance.post<ResponseType<{ item: TaskType }>>(`todo-lists/${todolistId}/tasks`, { title: taskTitile }).then((res) => res.data);
     },
     updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
-        return instance.put<ResponseType<TaskType>>(`todo-lists/${todolistId}/tasks/${taskId}`, model).then((res)=>res.data)
+        return instance.put<ResponseType<TaskType>>(`todo-lists/${todolistId}/tasks/${taskId}`, model).then((res) => res.data)
+    },
+    login(email: string, password: string, rememberMe: boolean) {
+        return instance.post<ResponseType<{ userId: number }>>(`auth/login/`, { email, password, rememberMe }).then(response => response.data)
+    },
+    me() {
+        return instance.get<ResponseType<DataType>>(`auth/me`).then((response) => response.data)
+    },
+    logout() {
+        return instance.delete<ResponseType>(`auth/login`).then((response) => response.data)
     }
 }
 

@@ -1,17 +1,18 @@
 
-import { Container, Grid, Paper } from '@material-ui/core';
+
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCreateTodoList, fetchTodolists, TodoListsCommonType } from '../../redux/todos-reduser';
-import AddItemForm from '../common/addItemForm/addItemForm';
 import Header from '../header/header';
-import TodoLists from '../todoLists/todoLists';
 import classes from './App.module.scss';
 import { AppRootStateType } from '../../redux/store';
 import { TaskType } from '../../api/api';
-import { LinearProgress } from "@material-ui/core";
-import { RequestStatusType } from '../../redux/app-reducer';
+import { CircularProgress, LinearProgress } from "@material-ui/core";
+import { initializeApp, RequestStatusType } from '../../redux/app-reducer';
 import { ErrorSnackbar } from '../common/errorSnackbar/errorSnackbar';
+import Content from '../content/content';
+import Login from '../common/login/login';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import Page404 from '../common/404/404';
 
 
 export type TasksStateType = {
@@ -20,60 +21,41 @@ export type TasksStateType = {
 
 
 function App() {
-
   const dispatch = useDispatch()
-  const todos = useSelector<AppRootStateType, Array<TodoListsCommonType>>((state) => state.todolists)
-  const tasks = useSelector<AppRootStateType, TasksStateType>((state) => state.tasks)
-  const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
-
   useEffect(() => {
-    dispatch(fetchTodolists());
-  }, [])
+    dispatch(initializeApp());
+  },[])
+  const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
+  const isInitialized = useSelector<AppRootStateType, boolean>((state) => state.app.isInitialized)
 
-
-
-  const onTodoAdded = useCallback((title: string) => {
-    dispatch(fetchCreateTodoList(title));
-  }, [dispatch])
+  if (!isInitialized) {
+   return <div
+       style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+       <CircularProgress/>
+   </div>
+}
 
   return (
     <div className={classes.App}>
       <Header />
       <ErrorSnackbar />
-      {status === 'loading' &&  <LinearProgress color="primary" variant="indeterminate" style={{ height: "10px", backgroundColor: "#abe9cd", backgroundImage: "linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%)" }} />}
-      <Container fixed>
-        <Grid container style={{ padding: "30px", justifyContent: "center" }}>
-          <AddItemForm
-            addTitle={onTodoAdded}
-            name={"todo"}
-            placeholder="Type todo name to start"
-          />
-        </Grid>
-        <Grid
-          container
-          spacing={3}
-          style={{ marginTop: "50px" }}
-          direction="row"
-          justify="space-between"
-        >
-          {todos.map((el) => {
-            return (
-              <Grid key={el.id} item style={{ width: "500px" }}>
-                <Paper style={{ padding: "10px" }}>
-                  <TodoLists
-                    key={el.id}
-                    todoListId={el.id}
-                    title={el.title}
-                    tasks={tasks[el.id]}
-                    active={el.filter}
-                    entityStatus={el.entityStatus}
-                  />
-                </Paper>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Container>
+      {status === "loading" && (
+        <LinearProgress
+          color="primary"
+          variant="indeterminate"
+          style={{
+            height: "10px",
+            backgroundColor: "#abe9cd",
+            backgroundImage: "linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%)",
+          }}
+        />
+      )}
+      <Switch>
+        <Route exact path={"/"} render={() => <Content />} />
+        <Route exact path={"/login"} render={() => <Login />} />
+        <Route path={"*"} render={() => <Page404 />} />
+        <Redirect from={"*"} to={"/404"} />
+      </Switch>
     </div>
   );
 }
