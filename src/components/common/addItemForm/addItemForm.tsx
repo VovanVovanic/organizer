@@ -12,7 +12,7 @@ type InputPropsType = {
   disabled?: boolean
 };
 const AddItemForm: React.FC<InputPropsType> = React.memo(({ addTitle, name, type, placeholder, disabled}) => {
-
+const[focus, setFocus]=useState<boolean>(false)
 
   const cls = [classes.formButton];
   type && cls.push(classes[type])
@@ -26,6 +26,7 @@ const AddItemForm: React.FC<InputPropsType> = React.memo(({ addTitle, name, type
   const onKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.key === "Enter" && onAddedNewTitle();
     e.key === "Escape" && setTitle("");
+     setFocus(true);
   };
 
   const onAddedNewTitle = () => {
@@ -36,6 +37,7 @@ const AddItemForm: React.FC<InputPropsType> = React.memo(({ addTitle, name, type
       setError("Title is required");
     }
     setTitle("");
+    setFocus(true)
   };
   return (
     <div className={classes.AddFormWrap}>
@@ -49,7 +51,7 @@ const AddItemForm: React.FC<InputPropsType> = React.memo(({ addTitle, name, type
         style={{ width: "80%" }}
         placeholder={placeholder}
         disabled={disabled}
-        autoFocus
+        autoFocus={focus}
       />
       <IconButton
         disabled={disabled}

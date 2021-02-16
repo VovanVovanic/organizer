@@ -1,34 +1,34 @@
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Dispatch } from "redux";
 import { todolistsAPI } from "../api/api";
-import { SetAppErrorType, setAppStatus, SetAppStatusType } from "./app-reducer";
+import {setAppStatus} from "./app-reducer";
 import { handleServerAppError, handleServerNetworkError } from "./error-utils";
 
 
 const initialState = {
   isLoggedIn: false,
 };
-type InitialStateType = typeof initialState;
 
-export const authReducer = (state: InitialStateType = initialState,action: ActionsType): InitialStateType => {
-  switch (action.type) {
-    case "login/SET-IS-LOGGED-IN":
-      return { ...state, isLoggedIn: action.value };
-    default:
-      return state;
+const slice = createSlice({
+  name: 'auth',
+  initialState: initialState,
+  reducers: {
+    setIsLoggedIn(state, action: PayloadAction<{value:boolean}>) {
+      state.isLoggedIn = action.payload.value
+    }
   }
-};
-// actions
-export const setIsLoggedIn = (value: boolean) =>
-  ({ type: "login/SET-IS-LOGGED-IN", value } as const);
+})
+export const authReducer = slice.reducer
+export const{setIsLoggedIn}=slice.actions
 
 // thunks
-export const login = (email: string, password: string, rememberMe: boolean) => (dispatch: Dispatch<ActionsType>) => {
-  dispatch(setAppStatus("loading"));
+export const login = (email: string, password: string, rememberMe: boolean) => (dispatch: Dispatch) => {
+  dispatch(setAppStatus({status:"loading"}));
  todolistsAPI.login(email, password, rememberMe)
     .then((res) => {
       if (res.resultCode === 0) {
-        dispatch(setAppStatus("succeeded"));
-        dispatch(setIsLoggedIn(true));
+        dispatch(setAppStatus({status:"succeeded"}));
+        dispatch(setIsLoggedIn({value:true}));
       } else {
         handleServerAppError(res, dispatch);
       }
@@ -37,13 +37,13 @@ export const login = (email: string, password: string, rememberMe: boolean) => (
       handleServerNetworkError(error, dispatch);
     });
 };
-export const logout = () => (dispatch: Dispatch<ActionsType>) => {
-  dispatch(setAppStatus("loading"));
+export const logout = () => (dispatch: Dispatch) => {
+  dispatch(setAppStatus({status:"loading"}));
   todolistsAPI.logout()
     .then((res) => {
       if (res.resultCode === 0) {
-        dispatch(setIsLoggedIn(false));
-        dispatch(setAppStatus("succeeded"));
+        dispatch(setIsLoggedIn({value:false}));
+        dispatch(setAppStatus({status:"succeeded"}));
       } else {
         handleServerAppError(res, dispatch);
       }
@@ -53,9 +53,3 @@ export const logout = () => (dispatch: Dispatch<ActionsType>) => {
     });
 };
 
-
-// types
-type ActionsType =
-  | ReturnType<typeof setIsLoggedIn>
-  | SetAppStatusType
-  | SetAppErrorType;

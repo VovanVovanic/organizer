@@ -28,7 +28,7 @@ const TodoLists: React.FC<todoListTypes> = React.memo(({ title, tasks, active, t
     }, []);
   
   const changeFilterHandler = useCallback((value: FilterType) => {
-    dispatch(changeTodolistFilter(todoListId, value));
+    dispatch(changeTodolistFilter({id:todoListId, filter:value}));
   },[dispatch, todoListId])
 
   const onTodoRemove = useCallback(() => {
@@ -85,7 +85,8 @@ const TodoLists: React.FC<todoListTypes> = React.memo(({ title, tasks, active, t
         addTitle={onTaskAdded}
         name={"task"}
         placeholder='type your task name'
-        disabled ={entityStatus === 'loading'}
+        disabled={entityStatus === 'loading'}
+        
       />
       <Grid item style={{width: "100%"}}>{itemList}</Grid>
       <Buttons changeFilterClick={changeFilterHandler} active={active} />
