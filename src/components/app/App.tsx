@@ -29,12 +29,12 @@ function App() {
   const isInitialized = useSelector<AppRootStateType, boolean>((state) => state.app.isInitialized)
 console.log(isInitialized);
 
-  if (!isInitialized) {
-   return <div
-       style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
-       <CircularProgress/>
-   </div>
-}
+//   if (!isInitialized) {
+//    return <div
+//        style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+//        <CircularProgress/>
+//    </div>
+// }
 
   return (
     <div className={classes.App}>
