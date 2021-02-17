@@ -24,7 +24,8 @@ function App() {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(initializeApp());
-  },[])
+  }, [])
+  
   const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
   const isInitialized = useSelector<AppRootStateType, boolean>((state) => state.app.isInitialized)
 console.log(isInitialized);
